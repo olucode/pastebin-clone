@@ -20,11 +20,11 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('POST /api/auth/signup', async () => {
+  it('POST /api/auth/register', async () => {
     const input = {
       name: 'a',
       email: 'a@a.com',
-      password: 'aaaaaaaa',
+      password: '12345',
     };
 
     await request(app.getHttpServer())
@@ -33,11 +33,12 @@ describe('AppController (e2e)', () => {
       .expect(201);
   });
 
-  it('POST /api/auth/signin', async () => {
+  it('POST /api/auth/login', async () => {
     const input = {
       email: 'a@a.com',
-      password: 'aaaaaaaa',
+      password: '12345',
     };
+
     const res = await request(app.getHttpServer())
       .post('/api/auth/login')
       .send(input)
@@ -54,12 +55,12 @@ describe('AppController (e2e)', () => {
     expect(users.body[0].name).toBe('a');
   });
 
-  it('GET /api/users/a', async () => {
+  it('GET /api/users/profile', async () => {
     const user = await request(app.getHttpServer())
       .get('/api/users/a')
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
-    expect(user.body.id).toBe(1);
+
     expect(user.body.name).toBe('a');
   });
 });

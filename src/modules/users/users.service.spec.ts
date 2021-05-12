@@ -5,19 +5,13 @@ import { Repository } from 'typeorm';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
 
+import { UsersRepoMock } from 'src/utils/mocks/users.mocks';
+
 describe('UsersService', () => {
   let service: UsersService;
   let repo: Repository<User>;
 
   beforeEach(async () => {
-    const usersRepoMockValue = {
-      find: () => 'mock',
-      findOne: () => 'mock',
-    };
-    const UsersRepoMock = {
-      provide: 'UserRepository',
-      useValue: usersRepoMockValue,
-    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [UsersService, UsersRepoMock],
     }).compile();
@@ -34,7 +28,7 @@ describe('UsersService', () => {
     it('should return the users', async () => {
       const result = [
         plainToClass(User, {
-          id: 1,
+          id: '1',
           name: 'a',
           email: 'a@example.com',
         }),
@@ -49,11 +43,11 @@ describe('UsersService', () => {
     });
   });
 
-  describe('findOneByName', () => {
+  describe('findOne', () => {
     it('should return the user', async () => {
-      const input = 'a';
+      const input = { id: '1' };
       const result = plainToClass(User, {
-        id: 1,
+        id: '1',
         name: 'a',
         email: 'a@example.com',
       });
@@ -62,8 +56,8 @@ describe('UsersService', () => {
         new Promise<User>((resolve) => resolve(result)),
       );
 
-      expect(await service.findOneByName(input)).toEqual(result);
-      const param = { name: input };
+      expect(await service.findOne(input)).toEqual(result);
+      const param = { where: input };
       expect(findOne.mock.calls[0][0]).toEqual(param);
     });
   });

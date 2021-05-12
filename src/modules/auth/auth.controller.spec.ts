@@ -2,8 +2,6 @@ import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { plainToClass } from 'class-transformer';
 
-import { User } from '../users/users.entity';
-
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/login-response.dto';
