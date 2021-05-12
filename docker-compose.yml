@@ -1,0 +1,44 @@
+version: '3'
+services:
+  db:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_DB: 'pastebin_db'
+      PG_DATA: /var/lib/postgresql/data
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+      - /usr/src/app/node_modules
+    ports:
+      - '5450:5432'
+    networks:
+      - app_network
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '5050:5050'
+    depends_on:
+      - db
+    networks:
+      - app_network
+    volumes:
+      - ./:/usr/src/app
+      - exclude:/usr/src/app/node_modules/
+
+volumes:
+  pgdata:
+    external: false
+  exclude:
+
+networks:
+  app_network:
+    driver: bridge
