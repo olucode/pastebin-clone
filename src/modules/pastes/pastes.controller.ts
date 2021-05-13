@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -37,6 +38,16 @@ export class PastesController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Paste> {
     return this.pastesService.findOne({ id });
+  }
+
+  @Get('/get-by-code/:shortCode')
+  async getPaste(@Param('shortCode') shortCode: string): Promise<Paste> {
+    const paste = await this.pastesService.findActivePaste(shortCode);
+    if (!paste) {
+      throw new NotFoundException('Paste does not exist');
+    }
+
+    return paste;
   }
 
   @Put(':id')

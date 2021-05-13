@@ -25,7 +25,7 @@ export class Paste {
   @Column()
   shortCode: string;
 
-  @Column('timestamptz', {
+  @Column('datetime', {
     nullable: true,
   })
   expiryDate: Date;

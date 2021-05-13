@@ -10,8 +10,16 @@ import { PastesService } from './pastes.service';
 import { User } from 'src/modules/users/users.entity';
 import { ShortCodeService } from 'src/services/short-code/short-code-generator.service';
 import { ConfigServiceMock } from 'src/utils/mocks/config.mocks';
-import { PastesRepoMock } from 'src/utils/mocks/pastes.mock';
+import { PasteQueryBuilder, PastesRepoMock } from 'src/utils/mocks/pastes.mock';
 import { ShortCodeServiceMock } from 'src/utils/mocks/shared.mocks';
+
+const validTestShortCode = 'bRWn';
+
+jest.mock('moment', () => {
+  const moment = jest.requireActual('moment');
+
+  return moment;
+});
 
 describe('PastesService', () => {
   let service: PastesService;
@@ -50,17 +58,16 @@ describe('PastesService', () => {
         title: 'Hello World',
         content: 'All of the hello world content',
       };
-      const shortCode = 'bRWn';
       const result = plainToClass(Paste, {
         id: '4dcd0205-9f4c-4b6d-8cdb-cd866525f62e',
         title: 'Hello World',
         content: 'All of the hello world content',
-        shortCode,
+        shortCode: validTestShortCode,
         expiryDate: null,
       });
 
       const generate = jest.spyOn(shortCodeService, 'generate').mockReturnValue(
-        new Promise<string>((resolve) => resolve(shortCode)),
+        new Promise<string>((resolve) => resolve(validTestShortCode)),
       );
       const save = jest.spyOn(pastesRepo, 'save').mockReturnValue(
         new Promise<Paste>((resolve) => resolve(result)),
@@ -74,6 +81,26 @@ describe('PastesService', () => {
 
       generate.mockRestore();
       save.mockRestore();
+    });
+  });
+
+  describe('Get a single paste', () => {
+    it('gets a single paste', async () => {
+      const result = plainToClass(Paste, {
+        id: '4dcd0205-9f4c-4b6d-8cdb-cd866525f62e',
+        title: 'Hello World',
+        content: 'All of the hello world content',
+        shortCode: validTestShortCode,
+        expiryDate: null,
+      });
+
+      const querybuilder = jest
+        .spyOn(pastesRepo, 'createQueryBuilder')
+        .mockImplementation(() => PasteQueryBuilder);
+
+      const testResult = await service.findActivePaste(validTestShortCode);
+      expect(testResult).toEqual(result);
+      expect(querybuilder).toHaveBeenCalled();
     });
   });
 });

@@ -1,7 +1,7 @@
 {
-  "name": "trust-pay",
+  "name": "pastebin-clone",
   "version": "0.1.0",
-  "description": "Trust-Pay",
+  "description": "Pastebin-Clone",
   "private": true,
   "scripts": {
     "prebuild": "rimraf dist",

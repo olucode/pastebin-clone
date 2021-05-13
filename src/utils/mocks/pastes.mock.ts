@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { plainToClass } from 'class-transformer';
+
+import { GenericQueryBuilder } from './shared.mocks';
+
+import { Paste } from 'src/modules/pastes/paste.entity';
 import { PastesService } from 'src/modules/pastes/pastes.service';
+
+export const ValidTestShortCode = 'bRWn';
 
 const pastesServiceMockValue = {
   findAll: () => jest.fn(),
@@ -11,12 +18,33 @@ export const PastesServiceMock = {
   useValue: pastesServiceMockValue,
 };
 
-const pastesRepoMockValue = {
+export const SamplePasteRow = plainToClass(Paste, {
+  id: '4dcd0205-9f4c-4b6d-8cdb-cd866525f62e',
+  title: 'Hello World',
+  content: 'All of the hello world content',
+  shortCode: ValidTestShortCode,
+  expiryDate: null,
+});
+export const PastesRepoMockValue = {
   save: () => jest.fn(),
   findOne: () => jest.fn(),
+  createQueryBuilder: jest.fn(() => ({
+    delete: jest.fn().mockReturnThis(),
+    execute: jest.fn().mockReturnThis(),
+    from: jest.fn().mockReturnThis(),
+    innerJoin: jest.fn().mockReturnThis(),
+    innerJoinAndSelect: jest.fn().mockReturnThis(),
+    getOne: jest.fn().mockReturnValue(SamplePasteRow),
+    where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+  })),
 };
+
+export const PasteQueryBuilder = Object.assign(GenericQueryBuilder, {
+  getOne: () => SamplePasteRow,
+});
 
 export const PastesRepoMock = {
   provide: 'PasteRepository',
-  useValue: pastesRepoMockValue,
+  useValue: PastesRepoMockValue,
 };

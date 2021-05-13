@@ -3,9 +3,9 @@ import { ConfigService } from 'src/config/config.service';
 
 const configServiceMockValue = {
   env: {
-    NODE_ENV: 'development',
+    NODE_ENV: 'test',
     PORT: 3000,
-    TYPEORM_TYPE: 'auto',
+    TYPEORM_TYPE: 'sqlite',
     TYPEORM_DB_URL: '',
     TYPEORM_LOGGING: false,
     HEALTH_CHECK_DATABASE_TIMEOUT_MS: 3000,

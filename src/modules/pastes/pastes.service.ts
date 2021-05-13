@@ -1,14 +1,15 @@
+/* eslint-disable import/first */
 /* eslint-disable class-methods-use-this */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import moment = require('moment');
 import { FindConditions, FindOneOptions, Repository } from 'typeorm';
-
-import { User } from '../users/users.entity';
 
 import { CreatePasteDto } from './dto/create-paste.dto';
 import { UpdatePasteDto } from './dto/update-paste.dto';
 import { Paste } from './paste.entity';
 
+import { User } from 'src/modules/users/users.entity';
 import { ShortCodeService } from 'src/services/short-code/short-code-generator.service';
 
 @Injectable()
@@ -25,7 +26,7 @@ export class PastesService {
     // Check if code is unique, otherwise cary on
     const isCodeUnique = await this.isCodeUnique(shortCode);
     if (!isCodeUnique) {
-      return this.create(createPasteDto, user); // Recursivel call create
+      return this.create(createPasteDto, user); // Recursively call create
     }
 
     return this.pasteRepo.save({ ...createPasteDto, shortCode, user });
@@ -42,16 +43,28 @@ export class PastesService {
   }
 
   update(id: number, updatePasteDto: UpdatePasteDto) {
-    return `This action updates a #${id} paste`;
+    throw new NotImplementedException();
   }
 
   remove(id: number) {
-    return `This action removes a #${id} paste`;
+    throw new NotImplementedException();
   }
 
   async isCodeUnique(shortCode: string): Promise<boolean> {
     const p = await this.findOne({ shortCode });
 
     return !!p;
+  }
+
+  async findActivePaste(shortCode: string): Promise<Paste | null> {
+    const p = await this.pasteRepo
+      .createQueryBuilder('paste')
+      .where('paste.shortCode = :shortCode', { shortCode })
+      .andWhere('expiryDate IS NULL OR expiryDate < :currentTime ', {
+        currentTime: moment().toISOString(),
+      })
+      .getOne();
+
+    return p;
   }
 }

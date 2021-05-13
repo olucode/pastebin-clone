@@ -15,10 +15,10 @@ import { User } from './users.entity';
 import { UsersService } from './users.service';
 
 @Controller('api/users')
+@UseGuards(AuthGuard())
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
@@ -26,7 +26,6 @@ export class UsersController {
     return this.usersService.findAll({});
   }
 
-  @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('profile')
