@@ -72,7 +72,7 @@ npm run test:cov
 
 ## DB migration
 
-To run migrations, SSH into the app container with `docker-compose exec app bash` (ignore if not Docker). Then run any of the of the below commands
+To run migrations, SSH into the app container with `docker-compose exec app bash` (ignore if not Docker). Then run any of the below commands
 
 
 ```shell
