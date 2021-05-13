@@ -26,6 +26,7 @@ export const SamplePasteRow = plainToClass(Paste, {
   shortCode: ValidTestShortCode,
   expiryDate: null,
   user: SampleUserRow,
+  isPasteExpired: false,
 });
 export const PastesRepoMockValue = {
   save: () => jest.fn(),

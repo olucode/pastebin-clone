@@ -1,3 +1,5 @@
+import { Expose } from 'class-transformer';
+import * as moment from 'moment';
 import {
   Column,
   CreateDateColumn,
@@ -45,4 +47,9 @@ export class Paste {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
+
+  @Expose()
+  public get isPasteExpired(): boolean {
+    return moment().isAfter(this.expiryDate);
+  }
 }

@@ -1,8 +1,9 @@
 /* eslint-disable import/first */
 /* eslint-disable class-methods-use-this */
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindConditions, FindOneOptions, Repository } from 'typeorm';
+import * as moment from 'moment';
+import { FindConditions, FindOneOptions, In, Repository } from 'typeorm';
 
 import { CreatePasteDto } from './dto/create-paste.dto';
 import { UpdatePasteDto } from './dto/update-paste.dto';
@@ -41,12 +42,12 @@ export class PastesService {
     });
   }
 
-  update(id: number, updatePasteDto: UpdatePasteDto) {
-    throw new NotImplementedException();
+  update(id: string, updatePasteDto: UpdatePasteDto) {
+    return this.pasteRepo.update(id, updatePasteDto);
   }
 
-  remove(id: number) {
-    throw new NotImplementedException();
+  remove(id: string) {
+    return this.pasteRepo.delete(id);
   }
 
   async isCodeExists(shortCode: string): Promise<boolean> {
@@ -55,9 +56,43 @@ export class PastesService {
     return !!p;
   }
 
-  async findActivePaste(shortCode: string): Promise<Paste | null> {
-    const p = await this.findOne({ shortCode }, { relations: ['user'] });
+  async findActivePastes(user: User): Promise<Paste[] | null> {
+    const activePastes = await this.pasteRepo
+      .createQueryBuilder('p')
+      .where(' "p"."user_id" = :userId ', {
+        userId: user.id,
+      })
+      .andWhere(
+        `
+        ( 
+          p.expiry_date IS NULL 
+          OR
+          (
+            "p"."expiry_date" >= :currentTime :: timestamptz
+          )
+        )
+        `,
+        {
+          currentTime: moment().toISOString(),
+        },
+      )
+      .getMany();
 
-    return p;
+    return activePastes;
+  }
+
+  // FOr internal use only, to be troggered by an admin or cleanup process
+  async removeExpiredPastes(pastes: string[] = []): Promise<{ rows: number }> {
+    const result = await this.pasteRepo
+      .createQueryBuilder()
+      .delete()
+      .from(Paste)
+      .where('expiry_date <= :currentTime :: timestamptz', {
+        currentTime: moment().toISOString(),
+      })
+      .orWhereInIds(pastes)
+      .execute();
+
+    return { rows: result.affected };
   }
 }

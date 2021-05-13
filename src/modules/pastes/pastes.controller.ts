@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
   Body,
   ClassSerializerInterceptor,
@@ -23,9 +24,6 @@ import { PastesService } from './pastes.service';
 
 import { User } from 'src/modules/users/users.entity';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const moment = require('moment');
-
 @Controller('api/pastes')
 @UseInterceptors(ClassSerializerInterceptor)
 export class PastesController {
@@ -46,6 +44,28 @@ export class PastesController {
     return this.pastesService.findOne({ id });
   }
 
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updatePasteDto: UpdatePasteDto) {
+    return this.pastesService.update(id, updatePasteDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.pastesService.remove(id);
+  }
+
+  @Delete('admin/expire-pastes')
+  removeExpiredPastes(@Body() body: { pastes?: string[] }) {
+    return this.pastesService.removeExpiredPastes(body.pastes);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Get('user/active')
+  getActivePastes(@Req() request: Request): Promise<Paste[]> {
+    return this.pastesService.findActivePastes(request.user as User);
+  }
+
   @Get('/get-by-code/:shortCode')
   async getPaste(@Param('shortCode') shortCode: string): Promise<Paste> {
     const paste = await this.pastesService.findOne(
@@ -56,20 +76,10 @@ export class PastesController {
       throw new NotFoundException('Paste does not exist');
     }
 
-    if (moment().isAfter(paste.expiryDate)) {
+    if (paste.isPasteExpired) {
       throw new NotFoundException('Sorry, this paste has expired');
     }
 
     return paste;
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updatePasteDto: UpdatePasteDto) {
-    return this.pastesService.update(+id, updatePasteDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pastesService.remove(+id);
   }
 }
