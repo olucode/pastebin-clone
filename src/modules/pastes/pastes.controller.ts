@@ -21,6 +21,7 @@ import { CreatePasteDto } from './dto/create-paste.dto';
 import { UpdatePasteDto } from './dto/update-paste.dto';
 import { Paste } from './paste.entity';
 import { PastesService } from './pastes.service';
+import { SanitizeTextPipe } from './pipes/sanitize-text.pipe';
 
 import { User } from 'src/modules/users/users.entity';
 
@@ -33,7 +34,7 @@ export class PastesController {
   @UseGuards(AuthGuard())
   @Post()
   create(
-    @Body() createPasteDto: CreatePasteDto,
+    @Body(SanitizeTextPipe) createPasteDto: CreatePasteDto,
     @Req() request: Request,
   ): Promise<Paste> {
     return this.pastesService.create(createPasteDto, request.user as User);

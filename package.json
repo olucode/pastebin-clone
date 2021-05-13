@@ -69,6 +69,7 @@
     "pluralize": "8.0.0",
     "reflect-metadata": "0.1.13",
     "rxjs": "6.6.3",
+    "sanitize": "^2.1.0",
     "sqlite3": "5.0.0",
     "swagger-ui-express": "4.1.5",
     "ts-node": "9.1.1",
