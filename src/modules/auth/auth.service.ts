@@ -76,7 +76,7 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload): Promise<User> {
-    const user = await this.usersService.findOne({ email: payload.name });
+    const user = await this.usersService.findOne({ email: payload.email });
 
     return user;
   }
