@@ -41,12 +41,15 @@ npm i -g @nestjs/cli
 ### Docker development
 
 ```shell
+cp .env.example .env
 docker-compose up -d
 ```
 
 ### Running the app without Docker
 
 ```shell
+cp .env.example .env
+
 # development
 npm run start
 
@@ -99,3 +102,5 @@ npm run doc
 ```
 
 When the app is up and running, Swagger API documentation is available at the `/swagger` route
+
+> A Postman collection is available at [Pastebin-Clone-Collection](https://www.getpostman.com/collections/e93dcbd398a47ca9dd10)
