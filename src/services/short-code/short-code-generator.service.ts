@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from 'src/config/config.service';
 
+const Hashids = require('hashids/cjs');
+
 @Injectable()
 export class ShortCodeService {
   constructor(private readonly config: ConfigService) {}
@@ -14,7 +16,6 @@ export class ShortCodeService {
   }
 
   private hashId(encoder: number): string {
-    const Hashids = require('hashids/cjs');
     const hashids = new Hashids(this.config.env.HASHID_SALT);
 
     return hashids.encode(encoder);

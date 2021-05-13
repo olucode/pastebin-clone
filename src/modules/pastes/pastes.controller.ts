@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,6 +10,7 @@ import {
   Put,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -22,6 +24,7 @@ import { PastesService } from './pastes.service';
 import { User } from 'src/modules/users/users.entity';
 
 @Controller('api/pastes')
+@UseInterceptors(ClassSerializerInterceptor)
 export class PastesController {
   constructor(private readonly pastesService: PastesService) {}
 

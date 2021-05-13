@@ -28,7 +28,6 @@ describe('PastesController (e2e)', () => {
 
   let controller: PastesController;
   let service: PastesService;
-  let user: User;
   let pastesRepo: Repository<Paste>;
 
   beforeAll(async () => {
@@ -46,11 +45,6 @@ describe('PastesController (e2e)', () => {
     controller = module.get<PastesController>(PastesController);
     service = module.get<PastesService>(PastesService);
     pastesRepo = module.get<Repository<Paste>>('PasteRepository');
-    user = plainToClass(User, {
-      id: '3dcd0205-9f4c-4b6d-8cdb-cd866525f62e',
-      name: 'a',
-      email: 'a@example.com',
-    });
 
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
@@ -83,6 +77,8 @@ describe('PastesController (e2e)', () => {
 
       const expectedErrorResponse = { error: 'Not Found' };
       expect(res.body).toEqual(expect.objectContaining(expectedErrorResponse));
+
+      querybuilder.mockRestore();
     });
   });
 

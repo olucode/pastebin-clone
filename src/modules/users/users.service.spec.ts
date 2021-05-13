@@ -40,6 +40,8 @@ describe('UsersService', () => {
 
       expect(await service.findAll()).toEqual(result);
       expect(find.mock.calls).toHaveLength(1);
+
+      find.mockRestore();
     });
   });
 
@@ -59,6 +61,8 @@ describe('UsersService', () => {
       expect(await service.findOne(input)).toEqual(result);
       const param = { where: input };
       expect(findOne.mock.calls[0][0]).toEqual(param);
+
+      findOne.mockRestore();
     });
   });
 });

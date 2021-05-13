@@ -2,6 +2,7 @@
 import { plainToClass } from 'class-transformer';
 
 import { GenericQueryBuilder } from './shared.mocks';
+import { SampleUserRow } from './users.mocks';
 
 import { Paste } from 'src/modules/pastes/paste.entity';
 import { PastesService } from 'src/modules/pastes/pastes.service';
@@ -24,20 +25,16 @@ export const SamplePasteRow = plainToClass(Paste, {
   content: 'All of the hello world content',
   shortCode: ValidTestShortCode,
   expiryDate: null,
+  user: SampleUserRow,
 });
 export const PastesRepoMockValue = {
   save: () => jest.fn(),
   findOne: () => jest.fn(),
-  createQueryBuilder: jest.fn(() => ({
-    delete: jest.fn().mockReturnThis(),
-    execute: jest.fn().mockReturnThis(),
-    from: jest.fn().mockReturnThis(),
-    innerJoin: jest.fn().mockReturnThis(),
-    innerJoinAndSelect: jest.fn().mockReturnThis(),
-    getOne: jest.fn().mockReturnValue(SamplePasteRow),
-    where: jest.fn().mockReturnThis(),
-    andWhere: jest.fn().mockReturnThis(),
-  })),
+  createQueryBuilder: jest.fn(() =>
+    Object.assign(GenericQueryBuilder, {
+      getOne: () => SamplePasteRow,
+    }),
+  ),
 };
 
 export const PasteQueryBuilder = Object.assign(GenericQueryBuilder, {

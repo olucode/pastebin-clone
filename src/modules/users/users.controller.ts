@@ -16,18 +16,17 @@ import { UsersService } from './users.service';
 
 @Controller('api/users')
 @UseGuards(AuthGuard())
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiBearerAuth()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   async findAll(): Promise<User[]> {
     return this.usersService.findAll({});
   }
 
   @ApiBearerAuth()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('profile')
   async profile(@Req() request: Request): Promise<User> {
     const authUser = request.user as User;

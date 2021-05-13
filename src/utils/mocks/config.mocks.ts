@@ -11,7 +11,7 @@ const configServiceMockValue = {
     HEALTH_CHECK_DATABASE_TIMEOUT_MS: 3000,
     JWT_SECRET: '',
     JWT_EXPIRES_IN: 86400,
-    SKIP_AUTH: false,
+    SKIP_AUTH: true,
     SWAGGER_UI: false,
     HASHID_SALT: 'hash-secret',
   },

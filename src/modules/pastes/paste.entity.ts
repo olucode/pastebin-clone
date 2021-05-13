@@ -10,6 +10,9 @@ import {
 
 import { User } from '../users/users.entity';
 
+// Sqlite
+const dateColumnType =
+  process.env.NODE_ENV === 'test' ? 'datetime' : 'timestamptz';
 @Entity()
 @Index('IDX_SHORTCODE_EXPIRY_DATE', ['shortCode', 'expiryDate'])
 export class Paste {
@@ -22,10 +25,11 @@ export class Paste {
   @Column('text')
   content: string;
 
-  @Column()
+  @Column('varchar')
   shortCode: string;
 
-  @Column('datetime', {
+  @Column({
+    type: dateColumnType,
     nullable: true,
   })
   expiryDate: Date;

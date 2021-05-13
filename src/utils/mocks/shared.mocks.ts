@@ -22,6 +22,8 @@ export const GenericQueryBuilder: any = {
   innerJoinAndSelect: () => GenericQueryBuilder,
   where: () => GenericQueryBuilder,
   andWhere: () => GenericQueryBuilder,
+  leftJoinAndSelect: () => GenericQueryBuilder,
+  of: () => GenericQueryBuilder,
 };
 
 export const MockAuthGuard = {

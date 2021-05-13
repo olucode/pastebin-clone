@@ -24,8 +24,8 @@ export class PastesService {
     const shortCode = await this.shortCodeService.generate(`${Date.now()}`);
 
     // Check if code is unique, otherwise cary on
-    const isCodeUnique = await this.isCodeUnique(shortCode);
-    if (!isCodeUnique) {
+    const isCodeExists = await this.isCodeExists(shortCode);
+    if (isCodeExists) {
       return this.create(createPasteDto, user); // Recursively call create
     }
 
@@ -50,7 +50,7 @@ export class PastesService {
     throw new NotImplementedException();
   }
 
-  async isCodeUnique(shortCode: string): Promise<boolean> {
+  async isCodeExists(shortCode: string): Promise<boolean> {
     const p = await this.findOne({ shortCode });
 
     return !!p;
@@ -58,9 +58,10 @@ export class PastesService {
 
   async findActivePaste(shortCode: string): Promise<Paste | null> {
     const p = await this.pasteRepo
-      .createQueryBuilder('paste')
-      .where('paste.shortCode = :shortCode', { shortCode })
-      .andWhere('expiryDate IS NULL OR expiryDate < :currentTime ', {
+      .createQueryBuilder('p')
+      .leftJoinAndSelect('p.user', 'user')
+      .where('p.shortCode = :shortCode', { shortCode })
+      .andWhere('p.expiryDate IS NULL OR p.expiryDate < :currentTime ', {
         currentTime: moment().toISOString(),
       })
       .getOne();

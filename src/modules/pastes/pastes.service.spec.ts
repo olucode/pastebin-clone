@@ -72,6 +72,9 @@ describe('PastesService', () => {
       const save = jest.spyOn(pastesRepo, 'save').mockReturnValue(
         new Promise<Paste>((resolve) => resolve(result)),
       );
+      const isCodeExists = jest.spyOn(service, 'isCodeExists').mockReturnValue(
+        new Promise<boolean>((resolve) => resolve(false)),
+      );
 
       const testResult = await service.create(input, user);
 
@@ -81,6 +84,7 @@ describe('PastesService', () => {
 
       generate.mockRestore();
       save.mockRestore();
+      isCodeExists.mockRestore();
     });
   });
 
@@ -99,8 +103,10 @@ describe('PastesService', () => {
         .mockImplementation(() => PasteQueryBuilder);
 
       const testResult = await service.findActivePaste(validTestShortCode);
-      expect(testResult).toEqual(result);
+      expect(testResult).toEqual(expect.objectContaining(result));
       expect(querybuilder).toHaveBeenCalled();
+
+      querybuilder.mockRestore();
     });
   });
 });
