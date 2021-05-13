@@ -46,8 +46,12 @@ export class PastesService {
     return this.pasteRepo.update(id, updatePasteDto);
   }
 
-  remove(id: string) {
-    return this.pasteRepo.delete(id);
+  async remove(id: string): Promise<{ rows: number }> {
+    const result = await this.pasteRepo.delete(id);
+
+    return {
+      rows: result.affected,
+    };
   }
 
   async isCodeExists(shortCode: string): Promise<boolean> {

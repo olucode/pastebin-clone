@@ -54,14 +54,14 @@ export class PastesController {
     return this.pastesService.remove(id);
   }
 
-  @Delete('admin/expire-pastes')
+  @Delete('/admin/expire-pastes')
   removeExpiredPastes(@Body() body: { pastes?: string[] }) {
     return this.pastesService.removeExpiredPastes(body.pastes);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard())
-  @Get('user/active')
+  @Get('/user/active')
   getActivePastes(@Req() request: Request): Promise<Paste[]> {
     return this.pastesService.findActivePastes(request.user as User);
   }
