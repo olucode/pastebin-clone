@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { Module } from '@nestjs/common';
+
 import { ConfigService } from 'src/config/config.service';
 
 const configServiceMockValue = {
@@ -20,3 +22,9 @@ export const ConfigServiceMock = {
   provide: ConfigService,
   useValue: configServiceMockValue,
 };
+
+@Module({
+  providers: [ConfigServiceMock],
+  exports: [ConfigServiceMock],
+})
+export class ConfigModuleMock {}

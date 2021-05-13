@@ -11,5 +11,6 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "rootDir": "../",
-  "testEnvironment": "node"
+  "testEnvironment": "node",
+  "restoreMocks": true
 }

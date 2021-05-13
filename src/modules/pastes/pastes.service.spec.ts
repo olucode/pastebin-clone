@@ -10,7 +10,11 @@ import { PastesService } from './pastes.service';
 import { User } from 'src/modules/users/users.entity';
 import { ShortCodeService } from 'src/services/short-code/short-code-generator.service';
 import { ConfigServiceMock } from 'src/utils/mocks/config.mocks';
-import { PasteQueryBuilder, PastesRepoMock } from 'src/utils/mocks/pastes.mock';
+import {
+  PasteQueryBuilder,
+  PastesRepoMock,
+  SamplePasteRow,
+} from 'src/utils/mocks/pastes.mock';
 import { ShortCodeServiceMock } from 'src/utils/mocks/shared.mocks';
 
 const validTestShortCode = 'bRWn';
@@ -53,7 +57,7 @@ describe('PastesService', () => {
   });
 
   describe('create a paste', () => {
-    it('should return a valid paste', async () => {
+    it('should create a paste with valid data', async () => {
       const input: CreatePasteDto = {
         title: 'Hello World',
         content: 'All of the hello world content',
@@ -81,10 +85,6 @@ describe('PastesService', () => {
       // the svae method call should be made with the right arguments
       expect(save.mock.calls[0][0]).toEqual(expect.objectContaining(input));
       expect(testResult).toBe(result);
-
-      generate.mockRestore();
-      save.mockRestore();
-      isCodeExists.mockRestore();
     });
   });
 
@@ -99,14 +99,19 @@ describe('PastesService', () => {
       });
 
       const querybuilder = jest
-        .spyOn(pastesRepo, 'createQueryBuilder')
-        .mockImplementation(() => PasteQueryBuilder);
+        .spyOn(pastesRepo, 'findOne')
+        // .mockImplementation(() => PasteQueryBuilder);
+        .mockReturnValue(
+          new Promise<Paste>((resolve) => resolve(SamplePasteRow)),
+        );
 
-      const testResult = await service.findActivePaste(validTestShortCode);
+      // const testResult = await service.findActivePaste(validTestShortCode);
+      const testResult = await service.findOne(
+        { shortCode: validTestShortCode },
+        { relations: ['user'] },
+      );
       expect(testResult).toEqual(expect.objectContaining(result));
       expect(querybuilder).toHaveBeenCalled();
-
-      querybuilder.mockRestore();
     });
   });
 });

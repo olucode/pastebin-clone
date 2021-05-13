@@ -53,8 +53,6 @@ describe('Auth Controller', () => {
 
       expect(await controller.register(input)).toBe(result);
       expect(register.mock.calls[0][0]).toBe(input);
-
-      register.mockRestore();
     });
   });
 
@@ -74,8 +72,6 @@ describe('Auth Controller', () => {
 
         expect(await controller.login(input)).toBe(result);
         expect(login.mock.calls[0][0]).toBe(input);
-
-        login.mockRestore();
       });
     });
 
@@ -95,8 +91,6 @@ describe('Auth Controller', () => {
         const l = controller.login(input);
         await expect(l).rejects.toThrow(BadRequestException);
         expect(login.mock.calls[0][0]).toBe(input);
-
-        login.mockRestore();
       });
     });
   });

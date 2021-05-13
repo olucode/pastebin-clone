@@ -2,7 +2,6 @@
 /* eslint-disable class-methods-use-this */
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import moment = require('moment');
 import { FindConditions, FindOneOptions, Repository } from 'typeorm';
 
 import { CreatePasteDto } from './dto/create-paste.dto';
@@ -57,14 +56,7 @@ export class PastesService {
   }
 
   async findActivePaste(shortCode: string): Promise<Paste | null> {
-    const p = await this.pasteRepo
-      .createQueryBuilder('p')
-      .leftJoinAndSelect('p.user', 'user')
-      .where('p.shortCode = :shortCode', { shortCode })
-      .andWhere('p.expiryDate IS NULL OR p.expiryDate < :currentTime ', {
-        currentTime: moment().toISOString(),
-      })
-      .getOne();
+    const p = await this.findOne({ shortCode }, { relations: ['user'] });
 
     return p;
   }

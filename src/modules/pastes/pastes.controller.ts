@@ -23,6 +23,9 @@ import { PastesService } from './pastes.service';
 
 import { User } from 'src/modules/users/users.entity';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment');
+
 @Controller('api/pastes')
 @UseInterceptors(ClassSerializerInterceptor)
 export class PastesController {
@@ -45,9 +48,16 @@ export class PastesController {
 
   @Get('/get-by-code/:shortCode')
   async getPaste(@Param('shortCode') shortCode: string): Promise<Paste> {
-    const paste = await this.pastesService.findActivePaste(shortCode);
+    const paste = await this.pastesService.findOne(
+      { shortCode },
+      { relations: ['user'] },
+    );
     if (!paste) {
       throw new NotFoundException('Paste does not exist');
+    }
+
+    if (moment().isAfter(paste.expiryDate)) {
+      throw new NotFoundException('Sorry, this paste has expired');
     }
 
     return paste;

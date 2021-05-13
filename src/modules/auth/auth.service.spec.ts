@@ -74,11 +74,6 @@ describe('AuthService', () => {
       expect(hashSync.mock.calls[0][1]).toBe(mockSalt);
       const saveInput = { ...input, password: mockHash };
       expect(createNewUser.mock.calls[0][0]).toEqual(saveInput);
-
-      genSaltSync.mockRestore();
-      hashSync.mockRestore();
-      createNewUser.mockRestore();
-      sign.mockRestore();
     });
   });
 
@@ -107,10 +102,6 @@ describe('AuthService', () => {
 
         expect(await service.login(input)).toEqual(result);
         expect(findOne.mock.calls[0][0].email).toBe(input.email);
-
-        findOne.mockRestore();
-        compare.mockRestore();
-        sign.mockRestore();
       });
     });
 
@@ -131,8 +122,6 @@ describe('AuthService', () => {
 
         expect(await service.login(input)).toEqual(result);
         expect(findOne.mock.calls[0][0].email).toBe(input.email);
-
-        findOne.mockRestore();
       });
     });
 
@@ -162,9 +151,6 @@ describe('AuthService', () => {
         expect(findOne.mock.calls[0][0].email).toBe(input.email);
         expect(compare.mock.calls[0][0]).toBe(input.password);
         expect(compare.mock.calls[0][1]).toBe(user.password);
-
-        findOne.mockRestore();
-        compare.mockRestore();
       });
     });
   });

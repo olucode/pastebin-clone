@@ -2,25 +2,20 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
-import { plainToClass } from 'class-transformer';
 import * as request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { User } from '../users/users.entity';
-
-import { CreatePasteDto } from './dto/create-paste.dto';
 import { Paste } from './paste.entity';
 import { PastesController } from './pastes.controller';
 import { PastesService } from './pastes.service';
 
+import { ShortCodeService } from 'src/services/short-code/short-code-generator.service';
 import { ConfigServiceMock } from 'src/utils/mocks/config.mocks';
 import {
-  PasteQueryBuilder,
   PastesRepoMock,
   SamplePasteRow,
   ValidTestShortCode,
 } from 'src/utils/mocks/pastes.mock';
-import { ShortCodeServiceMock } from 'src/utils/mocks/shared.mocks';
 
 describe('PastesController (e2e)', () => {
   let app: INestApplication;
@@ -37,7 +32,7 @@ describe('PastesController (e2e)', () => {
       providers: [
         PastesRepoMock,
         ConfigServiceMock,
-        ShortCodeServiceMock,
+        ShortCodeService,
         PastesService,
       ],
     }).compile();
@@ -57,6 +52,10 @@ describe('PastesController (e2e)', () => {
 
   describe('when getting a paste /pastes', () => {
     it('GET /get-by-code/:code', async () => {
+      const findOne = jest.spyOn(pastesRepo, 'findOne').mockReturnValue(
+        new Promise<Paste>((resolve) => resolve(SamplePasteRow)),
+      );
+
       const res = await request(app.getHttpServer())
         .get(`/api/pastes/get-by-code/${ValidTestShortCode}`)
         .expect(200);
@@ -65,11 +64,9 @@ describe('PastesController (e2e)', () => {
     });
 
     it('GET /get-by-code/:code (404)', async () => {
-      const querybuilder = jest
-        .spyOn(pastesRepo, 'createQueryBuilder')
-        .mockImplementation(() =>
-          Object.assign(PasteQueryBuilder, { getOne: () => undefined }),
-        );
+      const findOne = jest.spyOn(pastesRepo, 'findOne').mockReturnValue(
+        new Promise<undefined>((resolve) => resolve(undefined)),
+      );
 
       const res = await request(app.getHttpServer())
         .get(`/api/pastes/get-by-code/invalidString`)
@@ -77,8 +74,6 @@ describe('PastesController (e2e)', () => {
 
       const expectedErrorResponse = { error: 'Not Found' };
       expect(res.body).toEqual(expect.objectContaining(expectedErrorResponse));
-
-      querybuilder.mockRestore();
     });
   });
 
