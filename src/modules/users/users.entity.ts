@@ -14,12 +14,16 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @Column()
+  @Column('varchar')
   name: string;
 
   @Index({ unique: true })
   @Column()
   email: string;
+
+  @Index({ unique: true })
+  @Column('varchar')
+  username: string;
 
   @Exclude({ toPlainOnly: true })
   @Column()

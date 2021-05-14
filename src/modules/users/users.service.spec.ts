@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
 
+import { ShortCodeServiceMock } from 'src/utils/mocks/shared.mocks';
 import { UsersRepoMock } from 'src/utils/mocks/users.mocks';
 
 describe('UsersService', () => {
@@ -13,7 +14,7 @@ describe('UsersService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UsersService, UsersRepoMock],
+      providers: [UsersService, UsersRepoMock, ShortCodeServiceMock],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
