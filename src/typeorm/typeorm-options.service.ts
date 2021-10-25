@@ -7,8 +7,6 @@ import { ConfigService } from '../config/config.service';
 import * as postgres from './ormconfig.postgres';
 // eslint-disable-next-line import/namespace
 import * as sqlite from './ormconfig.sqlite';
-// import sqlite = require('../config/ormconfig.sqlite');
-// import postgres = require('../config/ormconfig.postgres');
 
 @Injectable()
 export class TypeOrmOptionsService implements TypeOrmOptionsFactory {

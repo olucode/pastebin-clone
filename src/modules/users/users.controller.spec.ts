@@ -51,24 +51,4 @@ describe('Users Controller', () => {
       expect(findAll.mock.calls).toHaveLength(1);
     });
   });
-
-  describe('findOneByName', () => {
-    it('should return the user', async () => {
-      const input = 'a';
-      const result = plainToClass(User, {
-        id: 1,
-        name: 'a',
-        email: 'a@example.com',
-      });
-
-      const findOneByName = jest
-        .spyOn(service, 'findOneByName')
-        .mockReturnValue(
-          new Promise<User>((resolve) => resolve(result)),
-        );
-
-      expect(await controller.findOneByName(input)).toEqual(result);
-      expect(findOneByName.mock.calls[0][0]).toEqual(input);
-    });
-  });
 });

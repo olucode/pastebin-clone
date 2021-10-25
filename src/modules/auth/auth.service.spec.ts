@@ -1,8 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
-import { classToClass, plainToClass } from 'class-transformer';
-import { Repository } from 'typeorm';
+import { plainToClass } from 'class-transformer';
 
 import { User } from '../users/users.entity';
 import { UsersService } from '../users/users.service';
@@ -11,38 +10,22 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterAccountDto } from './dto/sign-up-input.dto';
 
+import { UsersRepoMock, UsersServiceMock } from 'src/utils/mocks/users.mocks';
+
 describe('AuthService', () => {
   let service: AuthService;
   let jwtService: JwtService;
   let usersService: UsersService;
-  let usersRepo: Repository<User>;
 
   beforeEach(async () => {
     const jwtServiceMockValue = {
-      sign: () => 'mock',
+      sign: () => jest.fn(),
     };
     const JwtServiceMock = {
       provide: JwtService,
       useValue: jwtServiceMockValue,
     };
-    const usersServiceMockValue = {
-      findOneByName: () => 'mock',
-      findAll: () => 'mock',
-      findOne: () => 'mock',
-      createNewUser: () => 'mock',
-    };
-    const UsersServiceMock = {
-      provide: UsersService,
-      useValue: usersServiceMockValue,
-    };
-    const usersRepoMockValue = {
-      save: () => 'mock',
-      findOne: () => 'mock',
-    };
-    const UsersRepoMock = {
-      provide: 'UserRepository',
-      useValue: usersRepoMockValue,
-    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [AuthService, JwtServiceMock, UsersServiceMock, UsersRepoMock],
     }).compile();
@@ -50,7 +33,6 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
     jwtService = module.get<JwtService>(JwtService);
     usersService = module.get<UsersService>(UsersService);
-    usersRepo = module.get<Repository<User>>('UserRepository');
   });
 
   it('should be defined', () => {
@@ -92,11 +74,6 @@ describe('AuthService', () => {
       expect(hashSync.mock.calls[0][1]).toBe(mockSalt);
       const saveInput = { ...input, password: mockHash };
       expect(createNewUser.mock.calls[0][0]).toEqual(saveInput);
-
-      genSaltSync.mockRestore();
-      hashSync.mockRestore();
-      createNewUser.mockRestore();
-      sign.mockRestore();
     });
   });
 
@@ -125,10 +102,6 @@ describe('AuthService', () => {
 
         expect(await service.login(input)).toEqual(result);
         expect(findOne.mock.calls[0][0].email).toBe(input.email);
-
-        findOne.mockRestore();
-        compare.mockRestore();
-        sign.mockRestore();
       });
     });
 
@@ -139,7 +112,9 @@ describe('AuthService', () => {
           password: 'secret',
         };
         const user = undefined;
-        const result = {};
+        const result = {
+          token: null,
+        };
 
         const findOne = jest.spyOn(usersService, 'findOne').mockReturnValue(
           new Promise<undefined>((resolve) => resolve(user)),
@@ -147,8 +122,6 @@ describe('AuthService', () => {
 
         expect(await service.login(input)).toEqual(result);
         expect(findOne.mock.calls[0][0].email).toBe(input.email);
-
-        findOne.mockRestore();
       });
     });
 
@@ -163,7 +136,9 @@ describe('AuthService', () => {
           name: 'a',
           email: 'a@example.com',
         });
-        const result = {};
+        const result = {
+          token: null,
+        };
 
         const findOne = jest.spyOn(usersService, 'findOne').mockReturnValue(
           new Promise<User>((resolve) => resolve(user)),
@@ -176,9 +151,6 @@ describe('AuthService', () => {
         expect(findOne.mock.calls[0][0].email).toBe(input.email);
         expect(compare.mock.calls[0][0]).toBe(input.password);
         expect(compare.mock.calls[0][1]).toBe(user.password);
-
-        findOne.mockRestore();
-        compare.mockRestore();
       });
     });
   });

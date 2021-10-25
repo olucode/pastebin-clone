@@ -1,4 +1,0 @@
-export const MAXIMUM_TIME_LIMIT = 20;
-export const TRANSACTION_CHECKS_INTERVAL = 5;
-export const CRON_JOB_INTERVAL = 3;
-export const PROVIDER_CHECK_CRON_JOB_INTERVAL = 2;

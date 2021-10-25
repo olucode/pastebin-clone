@@ -44,14 +44,14 @@ async function bootstrap(): Promise<void> {
 
   if (config.env.SWAGGER_UI) {
     const options = new DocumentBuilder()
-      .setTitle('Trustpay API')
-      .setDescription('API documentation for the Trustpay API')
+      .setTitle('Pastebin API')
+      .setDescription('API documentation for the Pastebin API')
       .setVersion('1.0')
       .addBearerAuth({ type: 'http' })
       .build();
     const document = SwaggerModule.createDocument(app, options);
 
-    SwaggerModule.setup('docs', app, document);
+    SwaggerModule.setup('swagger', app, document);
   }
 
   await app.listen(config.env.PORT || '9090');

@@ -1,153 +1,106 @@
-# NestJS starter
-
-[![CI status](https://github.com/twihike/nestjs-starter/workflows/ci/badge.svg)](https://github.com/twihike/nestjs-starter/actions)
-
-[NestJS](https://github.com/nestjs/nest) framework starter repository.
+# Pastebin Clone API
 
 ## Technologies
 
 * Language
-  * Docs
-    * TypeScript: <https://www.typescriptlang.org/docs/>
-  * Packages
-    * typescript: <https://github.com/microsoft/TypeScript>
+  * TypeScript: <https://www.typescriptlang.org/docs/>
 
-* Web Application Framework
-  * Docs
-    * NestJS: <https://docs.nestjs.com/>
-  * Packages
-    * @nestjs: <https://github.com/nestjs/nest>
+* Web Framework
+  * NestJS: <https://docs.nestjs.com/>
 
-* Database Access
-  * Docs
-    * TypeORM: <https://typeorm.io/>
-      * Supports MySQL / Postgres / SQLite And more...
-      * Automatic migrations generation
-  * Packages
-    * @nestjs/typeorm: <https://github.com/nestjs/typeorm>
-    * typeorm: <https://github.com/typeorm/typeorm>
-
-* Validation
-  * class-validator: <https://github.com/typestack/class-validator>
-
-* Serialization
-  * class-transformer: <https://github.com/typestack/class-transformer>
-
-* Security
-  * helmet: <https://github.com/helmetjs/helmet>
-  * bcrypt: <https://github.com/kelektiv/node.bcrypt.js>
-  * CORS: NestJS built-in
+* Database ORM
+  * TypeORM: <https://typeorm.io/>
 
 * Authentication
-  * Docs
-    * JWT: <https://jwt.io/>
-    * JWT Node.js: <https://github.com/auth0/node-jsonwebtoken>
-    * Passport: <http://www.passportjs.org/>
-  * Packages
-    * @nestjs/passport: <https://github.com/nestjs/passport>
-    * passport: <https://github.com/jaredhanson/passport>
-    * @nestjs/jwt: <https://github.com/nestjs/jwt>
-    * passport-jwt: <https://github.com/mikenicholson/passport-jwt>
-
-* Health Check
-  * @nestjs/terminus: <https://github.com/nestjs/terminus>
-  * @godaddy/terminus: <https://github.com/godaddy/terminus>
-
-* 12-Factor based config
-  * `src/config/config.service.ts`
-  * `src/config/config.env.ts`
+  * JWT: <https://jwt.io/>
 
 * Linter
-  * Docs
-    * ESLint: <https://eslint.org/>
-  * Packages
-    * eslint: <https://github.com/eslint/eslint>
-    * eslint-config-airbnb: <https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb>
-    * @typescript-eslint/parser: <https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/parser>
-    * @typescript-eslint/eslint-plugin: <https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin>
+  * ESLint: <https://eslint.org/>
 
 * Formatter
-  * Docs
-    * Prettier: <https://prettier.io/>
-  * Packages
-    * prettier: <https://github.com/prettier/prettier>
-    * eslint-plugin-prettier: <https://github.com/prettier/eslint-plugin-prettier>
-    * eslint-config-prettier: <https://github.com/prettier/eslint-config-prettier>
+  * Prettier: <https://prettier.io/>
 
 * Test
-  * Docs
-    * Jest: <https://jestjs.io/>
-  * Packages
-    * jest: <https://github.com/facebook/jest>
+  * Jest: <https://jestjs.io/>
 
 * Documentation
-  * Docs
-    * Compodoc: <https://compodoc.app/>
-  * Packages
-    * @compodoc/compodoc: <https://github.com/compodoc/compodoc>
+  * Compodoc: <https://compodoc.app/>
 
 * Documentation OpenAPI
-  * Docs
-    * OpenAPI: <https://www.openapis.org/>
-    * Swagger UI: <https://swagger.io/tools/swagger-ui/>
-  * Packages
-    * @nestjs/swagger: <https://github.com/nestjs/swagger>
-    * swagger-ui-express: <https://github.com/scottie1984/swagger-ui-express>
+  * OpenAPI: <https://www.openapis.org/>
+  * Swagger UI: <https://swagger.io/tools/swagger-ui/>
 
 ## Installation
 
+Ensure that the nest-cli is installed globally
+
 ```shell
-yarn global add @nestjs/cli
-yarn install
+npm i -g @nestjs/cli
 ```
 
-## Running the app
+### Docker development
 
 ```shell
+cp .env.example .env
+docker-compose up -d
+```
+
+### Running the app without Docker
+
+```shell
+cp .env.example .env
+
 # development
-yarn run start
+npm run start
 
 # watch mode
-yarn run start:dev
+npm run start:dev
 
 # production mode
-yarn run start:prod
+npm run start:prod
 ```
 
 ## Test
 
 ```shell
 # unit tests
-yarn run test
+npm run test
 
 # e2e tests
-yarn run test:e2e
+npm run test:e2e
 
 # test coverage
-yarn run test:cov
+npm run test:cov
 ```
 
 ## DB migration
 
+To run migrations, SSH into the app container with `docker-compose exec app bash` (ignore if not Docker). Then run any of the below commands
+
+
 ```shell
 # generate
-yarn run migration:generate <name>
+npm run migration:generate <name>
 
 # show all migrations
-yarn run migration:show
+npm run migration:show
 
 # run
-yarn run migration:run
+npm run migration:run
 
 # dry run
-yarn run schema:log
+npm run schema:log
 
 # revert
-yarn run migration:revert
+npm run migration:revert
 ```
 
 ## Documentation
 
 ```shell
-yarn run doc
+npm run doc
 ```
+
+When the app is up and running, Swagger API documentation is available at the `/swagger` route
+
+> A Postman collection is available at [Pastebin-Clone-Collection](https://www.getpostman.com/collections/e93dcbd398a47ca9dd10)

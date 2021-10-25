@@ -34,17 +34,22 @@ export class EnvConfig {
   @IsBoolean()
   SWAGGER_UI: boolean;
 
+  @IsString()
+  HASHID_SALT: string;
+
   static getDefaultObject(): EnvConfig {
     const obj = new EnvConfig();
     obj.NODE_ENV = 'development';
     obj.PORT = 3000;
     obj.TYPEORM_TYPE = 'auto';
+    obj.TYPEORM_DB_URL = '';
     obj.TYPEORM_LOGGING = false;
     obj.HEALTH_CHECK_DATABASE_TIMEOUT_MS = 3000;
     obj.JWT_SECRET = '';
     obj.JWT_EXPIRES_IN = 86400;
     obj.SKIP_AUTH = false;
     obj.SWAGGER_UI = false;
+    obj.HASHID_SALT = 'hash-secret';
 
     return obj;
   }
